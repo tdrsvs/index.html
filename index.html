@@ -1,123 +1,635 @@
-	
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>   مسلسل  Peaky Blinders </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #000010;
+            color: white;
+            overflow: auto;
+        }
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: #000010;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .loader {
+            border: 10px solid #fff;
+            border-top: 10px solid #e6b800;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .content {
+    display: block; /* تأكد من عرض المحتوى بشكل صحيح */
+    height: auto; /* السماح للتمرير للأسفل */
+    overflow: auto; /* السماح بالتمرير في القسم */
+}
 
-    <div class="card">
-      <div class="face face1">
-        <div class="content">
-          <i class="fab fa-android"></i>
-          <h3> TQ MAKER تحميل</h3>
-        </div>
-      </div>
-      <div class="face face2">
-        <div class="content">
-          <p> تطبيق إنشاء رموز الباركود على أجهزة الأندرويد يتيح للمستخدمين إنشاء رموز باركود بسهولة. يمكن تخصيص شكل وحجم وألوان الباركود. الواجهة بسيطة وتسمح بإنشاء الباركود بخطوات قليلة. بعد الإنشاء، يمكن حفظ الباركود على الجهاز أو إعادة توليده عند الحاجة. مناسب للأفراد والشركات لتتبع المنتجات أو لأغراض تسويقية.</p>
-          <a href="https://apk.e-droid.net/apk/app3121588-7sqmtr.apk?v=4" type="button">تحميل  مباشر</a>
-        </div>
-      </div>
+.video-player {
+    width: 100vw;
+    height: 56vw;
+    position: relative; /* لجعل المشغل غير مثبت */
+    margin-left: auto;
+    margin-right: auto;
+    background-color: black;
+}
+
+video {
+    width: 100%;
+    height: 100%;
+}
+        .pin-indicator {
+            position: absolute;
+            top: -3px;
+            right: -5px;
+            width: 150px;
+            height: 150px;
+        }
+        .video-info {
+            padding: 10px;
+            margin-top: 5px; /* مسافة طبيعية بين قسم العنوان وقسم القناة */
+        }
+        .video-title {
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #e6e6e6;
+            transition: color 0.3s ease;
+        }
+        .video-title:hover {
+            color: #e6b800;
+        }
+        .video-description {
+            display: none;
+            font-size: 14px;
+            color: #ddd;
+            margin: 5px 0;
+        }
+        .video-year {
+            font-size: 12px;
+            color: #909090;
+            margin-top: 5px;
+        }
+        .channel-info {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-top: -13px; /* تقليل المسافة إلى -5 */
+            
+        }
+        .channel-info img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .channel-info .channel-name {
+            font-size: 16px;
+            color: #e6e6e6;
+            font-weight: bold;
+        }
+        .suggested-videos {
+            margin-top: 10px; /* مسافة طبيعية بين العنوان وقسم المقترحات */
+            padding-left: 10px;
+            max-height: 400px;
+            overflow-y: auto; /* السماح بالتمرير */
+            display: flex;
+            flex-direction: column;
+        }
+        .suggested-video {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+        .suggested-video:hover {
+            background-color: #000010;
+            border-radius: 8px;
+        }
+        .suggested-video img {
+            width: 120px;
+            height: 67px;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+        .suggested-video .details .title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #e6e6e6;
+        }
+        .suggested-video .details .channel {
+            font-size: 12px;
+            color: #909090;
+        }
+        .suggested-video .details .year {
+            font-size: 12px;
+            color: #909090;
+        }
+        /* نافذة الاختيار */
+        .quality-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 10000;
+            color: white;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        .quality-popup h3 {
+            margin: 0 0 10px;
+        }
+        .quality-option {
+            margin: 5px 0;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .quality-option:hover {
+            background-color: #e6b800;
+        }
+        /* خيارات التحكم */
+        .controls-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 10000;
+            color: white;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+        .controls-popup h3 {
+            margin: 0 0 10px;
+        }
+        .control-option {
+            margin: 5px 0;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .control-option:hover {
+            background-color: #e6b800;
+        }
+    </style>
+</head>
+<body>
+
+<div class="loader-wrapper" id="loader-wrapper">
+    <div class="loader"></div>
+</div>
+
+<div class="content">
+    <div class="video-player" id="main-video">
+        <video id="video" controls>
+            <source src="https://firebasestorage.googleapis.com/v0/b/mare-c9dc2.appspot.com/o/%D8%AA%D8%B1%D9%88%D9%8A%D8%AC%2Flv_0_%D9%A2%D9%A0%D9%A2%D9%A4%D9%A0%D9%A4%D9%A2%D9%A7%D9%A2%D9%A2%D9%A1%D9%A9%D9%A4%D9%A3.mp4?alt=media&token=70dcb001-0ebe-4812-99d2-ec21898048d2" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+   
     </div>
-  
-  <script src="https://kit.fontawesome.com/95a02bd20d.js"></script>
- 
-<style> 
-body{
-  display:flex;
-  margin:0;
-  padding:0;
-  min-height: 100vh;
-  background: #444;
-  justify-content: center;
-  align-items: center;
-  font-family: arial;
-}
-.container{
-  width: 1000px;
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap:wrap;
-}
-.card{
-  position: relative;
-}
-.face{
-  width:300px;
-  height: 200px;
-  transition:.4s; 
-}
-.face1{
-  position: relative;
-  background: #333;
-  display: flex;
-  justify-content: center;
-  align-content:center;
-  align-items: center;
-  z-index: 1;
-  transform: translateY(100px);
-}
-.card:hover .face.face1{
-  transform: translateY(0);
-  box-shadow:
-  inset 0 0 60px whitesmoke,
-  inset 20px 0 80px #f0f,
-  inset -20px 0 80px #0ff,
-  inset 20px 0 300px #f0f,
-  inset -20px 0 300px #0ff,
-  0 0 50px #fff,
-  -10px 0 80px #f0f,
-  10px 0 80px #0ff; 
-}
-.face.face1 .content{
-  opacity: .2;
-  transition:  0.5s;
-  text-align: center;
-}
-.card:hover .face.face1 .content{
-  opacity: 1;
-}
-.face.face1 .content i{
-  font-size: 3em;
-  color: white;
-  display: inline-block;  
-}
-.face.face1 .content h3{
-  font-size: 1em;
-  color: white;
-  text-align: center;
-}
-.face.face1 .content a{
-   transition: .5s;
-}
-.face.face2{
-  position: relative;
-  background: whitesmoke;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  box-sizing: border-box;
-  box-shadow: 0 20px 50px rgba(0,0,0,.8);
-  transform: translateY(-100px);
-}
-.card:hover .face.face2{
-  transform: translateY(0);
-}
-p, a{
-  font-size: 10pt;
-  margin: 0 ;
-  padding: 0;
-  color:#333;
-}
-a{
-  text-decoration:none;
-  color: black;
-  box-sizing: border-box;
-  outline : 1px dashed #333;
-  padding: 10px;
-  margin: 15px 0 0;
-  display: inline-block;
-}
-a:hover{
-  background: #333 ;
-  color: whitesmoke; 
-  box-shadow: inset 0px 0px 10px rgba(0,0,0,0.5);
-}
-</style> 
+
+    <div class="video-info">
+        <div class="video-title" onclick="toggleDescription()"> Peaky Blinders      </div>
+        <div class="video-year" id="fixed-year">2013, المسلسل يحتوي على مشاهد غير مناسبة للأعمار القاصرة </div>
+        <div class="video-description">
+    	
+    تدور أحداث القصة في عام 1919 م، أي بعد الحرب العالمية الأولى في حي فقير في مدينة بريمنغهام، حيث آل (شيلبي) هم من يسيطر على المنطقة ويقومون بجمع الآتاوات مقابل الحماية التي يقدمونها لسكان الحي، إنهم العصابة الأشرس في بريمنغهام، تبدأ الأحداث عندما يقرر كبير المفتشين في لندن شن حملة ضد الجريمة في الحي في حين أن (تومي شيلبي) كان يفكر في التوسع أكثر في تجارة العائلة وهذا ما قد يجلب معه الكثير من العداوات
+    	 
+    		  </div>
+    </div>
+
+    <div class="channel-info">
+        <img src="https://www.babup.com/do.php?img=93513" alt="Channel Logo">
+        <div class="channel-name">Fans Home</div>
+    </div>
+
+    <hr style="border: 1px solid #fff; margin: 10px 0;">
+
+    <div class="suggested-videos">
+        <h3>| Start watching</h3>
+      
+        <div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20001%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20001%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20001%20480p.mp4', 'الموسم الأول الحلقة 1')">
+            <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+            <div class="details">
+                <div class="title"> Peaky Blinders    </div>
+                <div class="channel">مترجم  بالعربي</div>
+                <div class="year">| s1e1</div>
+            </div>
+        </div>
+       
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20002%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20002%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20002%20480p.mp4', 'الموسم الأول الحلقة 2')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s1e2</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20003%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20003%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20003%20480p.mp4', 'الموسم الأول الحلقة 3')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s1e3</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20004%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20004%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20004%20480p.mp4', 'الموسم الأول الحلقة 4')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s1e4</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20005%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20005%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20005%20480p.mp4', 'الموسم الأول الحلقة 5')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s1e5</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20006%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20006%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/1/Peaky%20blinders%20S01%20006%20480p.mp4', 'الموسم الأول الحلقة 6 والأخيرة للموسم الأول')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s1e6</div>
+    </div>
+</div>
+
+
+
+
+   <div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20001%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20001%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20001%20480p.mp4', 'الموسم الثاني الحلقة 1')">
+            <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+            <div class="details">
+                <div class="title"> Peaky Blinders    </div>
+                <div class="channel">مترجم  بالعربي</div>
+                <div class="year">| s2e1</div>
+            </div>
+        </div>
+       
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20002%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20002%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20002%20480p.mp4', 'الموسم الثاني الحلقة 2')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s2e2</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20003%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20003%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20003%20480p.mp4', 'الموسم الثاني الحلقة 3')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s2e3</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20004%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20004%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20004%20480p.mp4', 'الموسم الثاني الحلقة 4')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s2e4</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20005%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20005%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20005%20480p.mp4', 'الموسم الثاني الحلقة 5')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s2e5</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20006%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20006%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/2/Peaky%20blinders%20S02%20006%20480p.mp4', 'الموسم الثاني الحلقة 6 والأخيرة للموسم الثاني')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s2e6</div>
+    </div>
+</div>
+
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20001%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20001%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20001%20480p.mp4', 'الموسم الثالث الحلقة 1')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s3e1</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20002%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20002%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20002%20480p.mp4', 'الموسم الثالث الحلقة 2')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s3e2</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20003%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20003%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20003%20480p.mp4', 'الموسم الثالث الحلقة 3')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s3e3</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20004%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20004%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20004%20480p.mp4', 'الموسم الثالث الحلقة 4')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s3e4</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20005%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20005%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20005%20480p.mp4', 'الموسم الثالث الحلقة 5')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s3e5</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20006%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20006%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/3/Peaky%20blinders%20S03%20006%20480p.mp4', 'الموسم الثالث الحلقة 6 والأخيرة للموسم الثالث')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s3e6</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20001%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20001%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20001%20480p.mp4', 'الموسم الرابع الحلقة 1')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s4e1</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20002%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20002%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20002%20480p.mp4', 'الموسم الرابع الحلقة 2')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s4e2</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20003%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20003%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20003%20480p.mp4', 'الموسم الرابع الحلقة 3')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s4e3</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20004%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20004%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20004%20480p.mp4', 'الموسم الرابع الحلقة 4')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s4e4</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20005%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20005%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20005%20480p.mp4', 'الموسم الرابع الحلقة 5')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s4e5</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20006%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20006%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/4/Peaky%20blinders%20S04%20006%20480p.mp4', 'الموسم الرابع الحلقة 6 والأخيرة للموسم الرابع')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s4e6</div>
+    </div>
+</div>
+
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20001%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20001%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20001%20480p.mp4', 'الموسم الخامس الحلقة 1')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s5e1</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20002%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20002%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20002%20480p.mp4', 'الموسم الخامس الحلقة 2')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s5e2</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20003%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20003%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20003%20480p.mp4', 'الموسم الخامس الحلقة 3')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s5e3</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20004%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20004%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20004%20480p.mp4', 'الموسم الخامس الحلقة 4')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s5e4</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20005%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20005%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20005%20480p.mp4', 'الموسم الخامس الحلقة 5')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s5e5</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20006%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20006%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/5/Peaky%20blinders%20S05%20006%20480p.mp4', 'الموسم الخامس الحلقة 6 والأخيرة للموسم الخامس')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s5e6 </div>
+    </div>
+</div>
+
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20001%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20001%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20001%20480p.mp4', 'الموسم السادس الحلقة 1')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s6e1</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20002%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20002%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20002%20480p.mp4', 'الموسم السادس الحلقة 2')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s6e2</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20003%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20003%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20003%20480p.mp4', 'الموسم السادس الحلقة 3')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s6e3</div>
+    </div>
+</div>
+
+<div class="suggested-video" onclick="showQualityOptions('https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20004%20720p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20004%201080p.mp4', 'https://pullzonetaher.b-cdn.net/Series/Peaky%20blinders/6/Peaky%20blinders%20S06%20004%20480p.mp4', 'الموسم السادس الحلقة 4')">
+    <img src="https://s01.babup.com/uploads/MV5BMThlOWE3MWEtZjM4Ny00M2FiLTkyMmYtZGY3ZTcyMzM5YmNlXkEyXkFqcGdeQWpnYW1i-V1-.jpg" alt="Thumbnail">
+    <div class="details">
+        <div class="title"> Peaky Blinders </div>
+        <div class="channel">مترجم بالعربي</div>
+        <div class="year">| s6e4</div>
+    </div>
+</div>
+
+
+
+
+
+    </div>
+</div>
+
+<!-- نافذة اختيار الجودة -->
+<div class="quality-popup" id="quality-popup">
+    <h3>حدد جودة الحلقة</h3>
+    <div class="quality-option" onclick="playVideo('medium')">متوسطة</div>
+    <div class="quality-option" onclick="playVideo('high')">عالية</div>
+    <div class="quality-option" onclick="playVideo('low')">منخفضة</div>
+</div>
+
+<!-- نافذة خيارات التحكم -->
+<div class="controls-popup" id="controls-popup">
+    <h3>خيارات التحكم</h3>
+    <div class="control-option" onclick="toggleFullScreen()">توسيع الشاشة</div>
+    <div class="control-option" onclick="togglePlaybackSpeed()">تغيير سرعة التشغيل</div>
+</div>
+
+<script>
+    document.getElementById('loader-wrapper').style.display = 'none';
+    document.getElementById('main-video').style.display = 'block';
+    document.querySelector('.content').style.display = 'block';
+
+    function toggleDescription() {
+        const description = document.querySelector('.video-description');
+        description.style.display = description.style.display === 'block' ? 'none' : 'block';
+    }
+
+    let currentVideoQuality = {
+        medium: 'video2-medium.mp4',
+        high: 'video2-high.mp4',
+        low: 'video2-low.mp4'
+    };
+
+    function showQualityOptions(medium, high, low, title) {
+        currentVideoQuality = { medium, high, low };
+        const video = document.getElementById('video');
+        video.src = medium; // تعيين الجودة المتوسطة كبداية
+        document.getElementById('fixed-year').innerText = "Powered by Fans Home "; // تحديث السنة
+        document.querySelector('.video-title').innerText = title; // تحديث العنوان
+        document.getElementById('quality-popup').style.display = 'block'; // إظهار نافذة الجودة
+    }
+
+    function playVideo(quality) {
+        const video = document.getElementById('video');
+        video.src = currentVideoQuality[quality]; // تعيين مصدر الفيديو بناءً على الجودة المختارة
+        video.play();
+        document.getElementById('quality-popup').style.display = 'none'; // إخفاء نافذة الجودة
+    }
+
+    // خيارات التحكم
+    function toggleFullScreen() {
+        const video = document.getElementById('video');
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) { // Safari
+            video.webkitRequestFullscreen();
+        } else if (video.msRequestFullscreen) { // IE11
+            video.msRequestFullscreen();
+        }
+        document.getElementById('controls-popup').style.display = 'none'; // إخفاء نافذة التحكم
+    }
+
+    function togglePlaybackSpeed() {
+        const video = document.getElementById('video');
+        video.playbackRate = video.playbackRate === 1 ? 1.5 : 1; // تغيير السرعة بين 1 و 1.5
+        document.getElementById('controls-popup').style.display = 'none'; // إخفاء نافذة التحكم
+    }
+
+    // إظهار خيارات التحكم عند النقر على المشغل
+    document.getElementById('video').addEventListener('click', function() {
+        document.getElementById('controls-popup').style.display = 'block'; // إظهار خيارات التحكم
+    });
+</script>
+
+</body>
+</html>
